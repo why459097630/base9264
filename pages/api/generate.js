@@ -1,9 +1,11 @@
+// pages/api/generate.js
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const prompt = req.body.prompt;
+  const { prompt } = req.body;
 
   if (!prompt) {
     return res.status(400).json({ error: 'No prompt provided' });
@@ -14,7 +16,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: 'gpt-4o',
@@ -23,11 +25,11 @@ export default async function handler(req, res) {
           { role: 'user', content: prompt }
         ],
         temperature: 0.3
-      })
+      }),
     });
 
     const data = await response.json();
-    const result = JSON.stringify(data, null, 2);
+    const result = data.choices?.[0]?.message?.content || 'No response';
 
     res.status(200).json({ code: result });
   } catch (err) {
