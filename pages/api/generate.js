@@ -27,7 +27,7 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const result = data.choices?.[0]?.message?.content || 'No response from OpenAI';
+    const result = JSON.stringify(data, null, 2);
 
     res.status(200).json({ code: result });
   } catch (err) {
