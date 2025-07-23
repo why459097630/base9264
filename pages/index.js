@@ -6,10 +6,24 @@ export default function Home() {
   const [response, setResponse] = useState("");
 
   const handleSubmit = async () => {
-    setResponse("Generating app...");
-    setTimeout(() => {
-      setResponse("✅ App UI + Code has been generated (placeholder)");
-    }, 1500);
+    setResponse("Generating with AI...");
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await res.json();
+      if (res.ok) {
+        setResponse(data.code);
+      } else {
+        setResponse("❌ Error: " + data.error);
+      }
+    } catch (err) {
+      setResponse("❌ Network error: " + err.message);
+    }
   };
 
   return (
@@ -47,11 +61,11 @@ export default function Home() {
 
       {response && (
         <motion.div
-          className="mt-8 p-6 max-w-xl bg-white rounded-2xl shadow-lg text-center text-gray-700"
+          className="mt-8 p-6 max-w-xl bg-white rounded-2xl shadow-lg text-left text-gray-700 whitespace-pre-wrap text-sm overflow-x-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          {response}
+          <pre>{response}</pre>
         </motion.div>
       )}
     </main>
