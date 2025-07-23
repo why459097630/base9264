@@ -14,7 +14,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer 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'
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-4o',
