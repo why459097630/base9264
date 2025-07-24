@@ -19,7 +19,7 @@ export default function Home() {
       if (res.ok) {
         setResponse(data.code);
       } else {
-        setResponse("❌ Error: " + data.error);
+      setResponse("❌ Error: " + data.error + "\n" + (data.message || ""));
       }
     } catch (err) {
       setResponse("❌ Network error: " + err.message);
