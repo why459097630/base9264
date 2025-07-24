@@ -19,7 +19,7 @@ export default async function handler(req, res) {
         'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o', 
+        model: 'gpt-4o',
         messages: [
           {
             role: 'system',
@@ -31,14 +31,15 @@ export default async function handler(req, res) {
       }),
     });
 
-    const data = await response.json();
-
     if (!response.ok) {
+      const errorText = await response.text(); 
       return res.status(response.status).json({
-        error: 'OpenAI API error',
-        details: data,
+        error: `OpenAI API error (${response.status})`,
+        message: errorText,
       });
     }
+
+    const data = await response.json();
 
     if (!data.choices || !data.choices[0]?.message?.content) {
       return res.status(500).json({
@@ -53,8 +54,8 @@ export default async function handler(req, res) {
 
   } catch (err) {
     res.status(500).json({
-      error: 'Failed to generate code',
-      details: err.message,
+      error: 'Fetch failed',
+      message: err.message,
     });
   }
 }
